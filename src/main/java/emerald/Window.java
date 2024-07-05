@@ -1,5 +1,6 @@
 package emerald;
 
+import emerald.util.Time;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -11,13 +12,15 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class Window {
-    private int width, height;
-    private String title;
+    private final int width, height;
+    private final String title;
     private long glfwWindow;
 
-    private float r, g, b, a;
+    public float r, g, b, a;
 
     private  static Window window = null;
+
+    private static Scene currentScene;
 
     private  Window() {
         this.width = 1280;
@@ -27,6 +30,21 @@ public class Window {
         g = 0;
         b = 0;
         a = 1;
+    }
+
+    public static void changeScene(int newScene) {
+        switch (newScene) {
+            case 0:
+                currentScene = new LevelEditorScene();
+                //currentScene.init();
+                break;
+            case 1:
+                currentScene = new LevelScene();
+                break;
+            default:
+                assert false : "Unknown scene '" + newScene + "'";
+                break;
+        }
     }
 
     public static Window get() {
@@ -86,9 +104,15 @@ public class Window {
         glfwShowWindow(glfwWindow);
 
         GL.createCapabilities();
+
+        Window.changeScene(0);
     }
 
     public  void loop() {
+        float beginTime = Time.getTime();
+        float endTime = Time.getTime();
+        float dt = -1.0f;
+
         while (!glfwWindowShouldClose(glfwWindow)) {
             // Poll events
             glfwPollEvents();
@@ -96,7 +120,15 @@ public class Window {
             glClearColor(r, g, b, a);
             glClear(GL_COLOR_BUFFER_BIT);
 
+            if (dt >= 0) {
+                currentScene.update(dt);
+            }
+
             glfwSwapBuffers(glfwWindow);
+
+            endTime = Time.getTime();
+            dt = endTime - beginTime;
+            beginTime = endTime;
         }
     }
 }
