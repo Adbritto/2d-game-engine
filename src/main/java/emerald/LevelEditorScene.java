@@ -1,6 +1,7 @@
 package emerald;
 
 import emerald.renderer.Shader;
+import org.joml.Vector2f;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
@@ -35,11 +36,11 @@ public class LevelEditorScene extends Scene {
     private int vertexID, fragmentID, shaderProgram;
 
     private float[] vertexArray = {
-        //positions             // color
-         0.5f, -0.5f, 0.0f,       1.0f, 0.0f, 0.0f, 1.0f, // Bottom Right
-        -0.5f,  0.5f, 0.0f,       0.0f, 1.0f, 0.0f, 1.0f, // Top Left
-         0.5f,  0.5f, 0.0f,       0.0f, 0.0f, 1.0f, 1.0f, // Top Right
-        -0.5f, -0.5f, 0.0f,       1.0f, 1.0f, 0.0f, 1.0f, // Bottom Left
+         //positions                 // color
+         100.5f, 0.5f,   0.0f,       1.0f, 0.0f, 0.0f, 1.0f, // Bottom Right
+         0.5f,   100.5f, 0.0f,       0.0f, 1.0f, 0.0f, 1.0f, // Top Left
+         100.5f, 100.5f, 0.0f,       0.0f, 0.0f, 1.0f, 1.0f, // Top Right
+         0.5f,   0.5f,   0.0f,       1.0f, 1.0f, 0.0f, 1.0f, // Bottom Left
     };
 
     // IN CCW ORDER
@@ -58,6 +59,7 @@ public class LevelEditorScene extends Scene {
 
     @Override
     public void init() {
+        this.camera = new Camera(new Vector2f());
         defaultShader = new Shader("assets/shaders/default.glsl");
         defaultShader.compile();
 
@@ -98,8 +100,13 @@ public class LevelEditorScene extends Scene {
 
     @Override
     public void update(float dt) {
+        camera.position.x -= dt * 50.0f;
+        camera.position.y -= dt * 50.0f;
+
         // Bind shader program
         defaultShader.use();
+        defaultShader.uploadMat4f("uProjection", camera.getProjectionMatrix());
+        defaultShader.uploadMat4f("uView", camera.getViewMatrix());
         // Bind the VAO that we're using
         glBindVertexArray(vaoID);
 
