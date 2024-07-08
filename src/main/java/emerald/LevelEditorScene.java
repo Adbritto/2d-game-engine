@@ -1,6 +1,7 @@
 package emerald;
 
 import emerald.renderer.Shader;
+import emerald.renderer.Texture;
 import emerald.util.Time;
 import org.joml.Vector2f;
 import org.lwjgl.BufferUtils;
@@ -37,11 +38,11 @@ public class LevelEditorScene extends Scene {
     private int vertexID, fragmentID, shaderProgram;
 
     private float[] vertexArray = {
-         //positions                 // color
-         100.5f, 0.5f,   0.0f,       1.0f, 0.0f, 0.0f, 1.0f, // Bottom Right
-         0.5f,   100.5f, 0.0f,       0.0f, 1.0f, 0.0f, 1.0f, // Top Left
-         100.5f, 100.5f, 0.0f,       0.0f, 0.0f, 1.0f, 1.0f, // Top Right
-         0.5f,   0.5f,   0.0f,       1.0f, 1.0f, 0.0f, 1.0f, // Bottom Left
+         //positions                 // color                // UV Coords
+         100f,   0f, 0.0f,       1.0f, 0.0f, 0.0f, 1.0f,     1,1,// Bottom Right
+           0f, 100f, 0.0f,       0.0f, 1.0f, 0.0f, 1.0f,     0,0,// Top Left
+         100f, 100f, 0.0f,       0.0f, 0.0f, 1.0f, 1.0f,     1,0,// Top Right
+           0f,   0f, 0.0f,       1.0f, 1.0f, 0.0f, 1.0f,     0,1// Bottom Left
     };
 
     // IN CCW ORDER
@@ -53,6 +54,7 @@ public class LevelEditorScene extends Scene {
     private int vaoID, vboID, eboID;
 
     private Shader defaultShader;
+    private Texture testTexture;
 
     public LevelEditorScene() {
 
@@ -63,6 +65,7 @@ public class LevelEditorScene extends Scene {
         this.camera = new Camera(new Vector2f());
         defaultShader = new Shader("assets/shaders/default.glsl");
         defaultShader.compile();
+        this.testTexture = new Texture("assets/images/bhargie.jpg");
 
         // ============================================================
         // Generate VAO, VBO, and EBO buffer objects, and send to GPU
@@ -90,22 +93,30 @@ public class LevelEditorScene extends Scene {
         // Add vertex attribute pointers
         int positionsSize = 3;
         int colorSize = 4;
-        int floatSizeBytes = 4;
-        int vertexSizeBytes = (positionsSize + colorSize) * floatSizeBytes;
+        int uvSize = 2;
+        int vertexSizeBytes = (positionsSize + colorSize + uvSize) * Float.BYTES;
+
         glVertexAttribPointer(0, positionsSize, GL_FLOAT, false, vertexSizeBytes, 0);
         glEnableVertexAttribArray(0);
 
-        glVertexAttribPointer(1, colorSize, GL_FLOAT, false, vertexSizeBytes, positionsSize * floatSizeBytes);
+        glVertexAttribPointer(1, colorSize, GL_FLOAT, false, vertexSizeBytes, positionsSize * Float.BYTES);
         glEnableVertexAttribArray(1);
+
+        glVertexAttribPointer(2, uvSize,GL_FLOAT, false, vertexSizeBytes, (positionsSize + colorSize) * Float.BYTES);
+        glEnableVertexAttribArray(2);
     }
 
     @Override
     public void update(float dt) {
-            camera.position.x -= dt * 50.0f;
-            camera.position.y -= dt * 50.0f;
 
         // Bind shader program
         defaultShader.use();
+
+        // Upload texture to shader
+        defaultShader.uploadTexture("TEX_SAMPLER", 0);
+        glActiveTexture(GL_TEXTURE0);
+        testTexture.bind();
+
         defaultShader.uploadMat4f("uProjection", camera.getProjectionMatrix());
         defaultShader.uploadMat4f("uView", camera.getViewMatrix());
         defaultShader.uploadFloat("uTime", Time.getTime());
