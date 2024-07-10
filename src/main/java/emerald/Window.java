@@ -26,9 +26,9 @@ public class Window {
         this.width = 1280;
         this.height = 720;
         this.title = "Game Engine";
-        r = 1;
-        g = 1;
-        b = 1;
+        r = 0;
+        g = 0;
+        b = 0;
         a = 1;
     }
 

@@ -2,6 +2,7 @@ package emerald.renderer;
 
 import components.SpriteRenderer;
 import emerald.Window;
+import emerald.util.AssetPool;
 import org.joml.Vector4f;
 
 import static org.lwjgl.opengl.GL15.*;
@@ -32,7 +33,7 @@ public class RenderBatch {
     private Shader shader;
 
     public RenderBatch(int maxBatchSize) {
-        shader = new Shader("assets/shaders/default.glsl");
+        shader = AssetPool.getShader("assets/shaders/default.glsl");
         shader.compile();
         this.sprites = new SpriteRenderer[maxBatchSize];
         this.maxBatchSize = maxBatchSize;
