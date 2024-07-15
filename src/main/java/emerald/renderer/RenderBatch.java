@@ -3,6 +3,7 @@ package emerald.renderer;
 import components.SpriteRenderer;
 import emerald.Window;
 import emerald.util.AssetPool;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 
@@ -14,7 +15,7 @@ import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
-public class RenderBatch {
+public class RenderBatch implements Comparable<RenderBatch> {
     // Vertex
     // ======
     // Pos              Color                           tex coords      tex id
@@ -42,8 +43,10 @@ public class RenderBatch {
     private int vaoID, vboID;
     private int maxBatchSize;
     private Shader shader;
+    private int zIndex;
 
-    public RenderBatch(int maxBatchSize) {
+    public RenderBatch(int maxBatchSize, int zIndex) {
+        this.zIndex = zIndex;
         shader = AssetPool.getShader("assets/shaders/default.glsl");
         shader.compile();
         this.sprites = new SpriteRenderer[maxBatchSize];
@@ -239,5 +242,14 @@ public class RenderBatch {
 
     public boolean hasTexture(Texture tex) {
         return this.textures.contains(tex);
+    }
+
+    public int getzIndex() {
+        return this.zIndex;
+    }
+
+    @Override
+    public int compareTo(@NotNull RenderBatch o) {
+        return Integer.compare(this.zIndex, o.getzIndex());
     }
 }
