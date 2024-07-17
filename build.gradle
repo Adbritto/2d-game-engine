@@ -20,8 +20,8 @@ project.ext.jomlVersion = "1.10.6"
 project.ext.lwjglNatives = "natives-windows"
 
 dependencies {
+    // LWJGL
     implementation platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
-
     implementation "org.lwjgl:lwjgl"
     implementation "org.lwjgl:lwjgl-assimp"
     implementation "org.lwjgl:lwjgl-glfw"
@@ -36,8 +36,15 @@ dependencies {
     runtimeOnly "org.lwjgl:lwjgl-openal::$lwjglNatives"
     runtimeOnly "org.lwjgl:lwjgl-opengl::$lwjglNatives"
     runtimeOnly "org.lwjgl:lwjgl-stb::$lwjglNatives"
+
+    // JOML
     implementation "org.joml:joml:${jomlVersion}"
+
+    // ImGui
     implementation fileTree('libs') { include '*.jar' }
+
+    //GSON
+    implementation 'com.google.code.gson:gson:2.11.0'
 }
 
 test {
