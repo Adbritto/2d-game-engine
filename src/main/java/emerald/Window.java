@@ -1,17 +1,13 @@
 package emerald;
 
 import imgui.ImGui;
-import imgui.ImGuiIO;
-import imgui.flag.ImGuiConfigFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.Callbacks;
-import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
 
-import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
@@ -94,6 +90,7 @@ public class Window {
         float endTime;
         float dt = -1.0f;
 
+        currentScene.load();
         while (!glfwWindowShouldClose(glfwWindow)) {
             // Poll events
             glfwPollEvents();
@@ -112,6 +109,8 @@ public class Window {
             dt = endTime - beginTime;
             beginTime = endTime;
         }
+
+        currentScene.saveExit();
     }
 
     public void destroy() {
