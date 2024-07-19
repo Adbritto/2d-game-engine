@@ -1,15 +1,13 @@
-package emerald;
+package emerald.scenes;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import components.Rigidbody;
-import components.Sprite;
-import components.SpriteRenderer;
-import components.Spritesheet;
+import components.*;
+import emerald.Camera;
+import emerald.GameObject;
+import emerald.Prefabs;
+import emerald.Transform;
 import emerald.util.AssetPool;
 import imgui.ImGui;
 import imgui.ImVec2;
-import imgui.flag.ImGuiConfigFlags;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 
@@ -17,6 +15,9 @@ public class LevelEditorScene extends Scene {
 
     private GameObject obj1;
     private Spritesheet sprites;
+    SpriteRenderer obj1Sprite;
+
+    MouseControls mouseControls = new MouseControls();
 
     public LevelEditorScene() {
 
@@ -34,7 +35,7 @@ public class LevelEditorScene extends Scene {
         }
 
         obj1 = new GameObject("Object 1", new Transform(new Vector2f(200,100), new Vector2f(256, 256)), 1);
-        SpriteRenderer obj1Sprite = new SpriteRenderer();
+        obj1Sprite = new SpriteRenderer();
         obj1Sprite.setColor(new Vector4f(1, 1, 1, 1));
         obj1.addComponent(obj1Sprite);
         obj1.addComponent(new Rigidbody());
@@ -62,6 +63,8 @@ public class LevelEditorScene extends Scene {
 
     @Override
     public void update(float dt) {
+        mouseControls.update(dt);
+
 //        System.out.println("FPS: " + (1.0f / dt));
 
         for (GameObject go : this.gameObjects) {
@@ -93,7 +96,8 @@ public class LevelEditorScene extends Scene {
 
             ImGui.pushID(i);
             if (ImGui.imageButton(id, spriteWidth, spriteHeight, texCoords[0].x, texCoords[0].y, texCoords[2].x, texCoords[2].y)) {
-                System.out.println("Button " + i + "clicked");
+                GameObject object = Prefabs.generateSpriteObject(sprite, spriteWidth, spriteHeight);
+                mouseControls.pickupObject(object);
             }
             ImGui.popID();
 

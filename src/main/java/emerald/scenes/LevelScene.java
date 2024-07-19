@@ -1,6 +1,4 @@
-package emerald;
-
-import java.awt.event.KeyEvent;
+package emerald.scenes;
 
 public class LevelScene extends Scene {
 

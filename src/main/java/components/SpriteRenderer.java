@@ -1,6 +1,5 @@
 package components;
 
-import emerald.Component;
 import emerald.Transform;
 import emerald.renderer.Texture;
 import imgui.ImGui;

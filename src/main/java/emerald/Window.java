@@ -7,6 +7,9 @@ import org.lwjgl.Version;
 import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
+import emerald.scenes.LevelEditorScene;
+import emerald.scenes.LevelScene;
+import emerald.scenes.Scene;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -31,8 +34,8 @@ public class Window {
     private ImGuiLayer imGuiLayer;
 
     private  Window() {
-        this.width = 1280;
-        this.height = 720;
+        this.width = 1920;
+        this.height = 1080;
         this.title = "Game Engine";
         r = 0;
         g = 0;

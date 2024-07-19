@@ -1,4 +1,4 @@
-package emerald;
+package components;
 
 import com.google.gson.*;
 

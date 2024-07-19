@@ -1,7 +1,5 @@
 package components;
 
-import emerald.Component;
-
 public class FontRenderer extends Component {
 
     @Override
