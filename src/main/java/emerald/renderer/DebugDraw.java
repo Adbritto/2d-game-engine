@@ -2,7 +2,7 @@ package emerald.renderer;
 
 import emerald.Window;
 import emerald.util.AssetPool;
-import emerald.util.JMath;
+import emerald.util.EMath;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
@@ -150,7 +150,7 @@ public class DebugDraw {
 
         if (rotation != 0.0f) {
             for (Vector2f vert : vertices) {
-                JMath.rotate(vert, rotation, center);
+                EMath.rotate(vert, rotation, center);
             }
         }
 
@@ -179,7 +179,7 @@ public class DebugDraw {
 
         for (int i = 0; i < points.length; i++) {
             Vector2f tmp = new Vector2f(radius, 0);
-            JMath.rotate(tmp, currentAngle, new Vector2f());
+            EMath.rotate(tmp, currentAngle, new Vector2f());
             points[i] = new Vector2f(tmp).add(center);
 
             if (i > 0) {
