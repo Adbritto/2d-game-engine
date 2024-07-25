@@ -11,7 +11,7 @@ repositories {
 }
 
 dependencies {
-    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation platform('org.junit:junit-bom:5.10.3')
     testImplementation 'org.junit.jupiter:junit-jupiter'
 }
 
@@ -20,6 +20,9 @@ project.ext.jomlVersion = "1.10.6"
 project.ext.lwjglNatives = "natives-windows"
 
 dependencies {
+    //JUnit
+    testImplementation("junit:junit:4.13.2")
+
     // LWJGL
     implementation platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
     implementation "org.lwjgl:lwjgl"

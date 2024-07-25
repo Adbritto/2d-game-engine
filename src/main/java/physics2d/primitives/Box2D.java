@@ -1,5 +1,6 @@
 package physics2d.primitives;
 
+import emerald.util.EMath;
 import org.joml.Vector2f;
 import physics2d.rigidbody.Rigidbody2D;
 
@@ -36,11 +37,14 @@ public class Box2D {
 
         if (rigidbody.getRotation() != 0.0f) {
             for (Vector2f vert : vertices) {
-                // TODO: IMPLEMENT ME
                 // Rotates point(Vector2f) about center(Vector2f) by rotation(float in deg)
-                //EMath.rotate(vert, this.rigidbody.getRotation(), this.rigidbody.getPosition());
+                EMath.rotate(vert, this.rigidbody.getRotation(), this.rigidbody.getPosition());
             }
         }
         return vertices;
+    }
+
+    public Rigidbody2D getRigidbody() {
+        return this.rigidbody;
     }
 }
