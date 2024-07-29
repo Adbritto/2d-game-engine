@@ -5,8 +5,6 @@ import emerald.util.EMath;
 import org.joml.Vector2f;
 import physics2d.primitives.*;
 
-import javax.swing.*;
-
 public class IntersectionDetector2D {
     // =====================================================
     // Point vs. Primitive Tests
@@ -241,5 +239,66 @@ public class IntersectionDetector2D {
         }
 
         return true;
+    }
+
+    // =====================================================
+    // Circle vs. Primitive Tests
+    // =====================================================
+    public static boolean circleAndline(Circle circle, Line2D line) {
+        return lineAndCircle(line, circle);
+    }
+
+    public static boolean circleAndCircle(Circle c1, Circle c2) {
+        Vector2f vecBetweenCenters = new Vector2f(c1.getCenter()).sub(c2.getCenter());
+        float radiiSum = c1.getRadius() + c2.getRadius();
+        return vecBetweenCenters.lengthSquared() <= radiiSum * radiiSum;
+    }
+
+    public static boolean circleAndAABB(Circle circle, AABB2D box) {
+        Vector2f min = box.getMin();
+        Vector2f max = box.getMax();
+
+        Vector2f closestPointToCircle = new Vector2f(circle.getCenter());
+        if (closestPointToCircle.x < min.x) {
+            closestPointToCircle.x = min.x;
+        } else if (closestPointToCircle.x > max.x) {
+            closestPointToCircle.x = max.x;
+        }
+
+        if (closestPointToCircle.y < min.y) {
+            closestPointToCircle.y = min.y;
+        } else if (closestPointToCircle.y > max.y) {
+            closestPointToCircle.y = max.y;
+        }
+
+        Vector2f circleToBox = new Vector2f(circle.getCenter()).sub(closestPointToCircle);
+        return circleToBox.lengthSquared() <= circle.getRadius() * circle.getRadius();
+    }
+
+    public static boolean circleAndBox2D(Circle circle, Box2D box) {
+        // rotate, then treat box like AABB
+        Vector2f min = new Vector2f();
+        Vector2f max = new Vector2f(box.getHalfSize()).mul(2.0f);
+
+        // Create a circle in box local space
+        Vector2f r = new Vector2f(circle.getCenter()).sub(box.getRigidbody().getPosition());
+        EMath.rotate(r, -box.getRigidbody().getRotation(), new Vector2f(0, 0));
+        Vector2f localCirclePos = new Vector2f(r).add(box.getHalfSize());
+
+        Vector2f closestPointToCircle = new Vector2f(localCirclePos);
+        if (closestPointToCircle.x < min.x) {
+            closestPointToCircle.x = min.x;
+        } else if (closestPointToCircle.x > max.x) {
+            closestPointToCircle.x = max.x;
+        }
+
+        if (closestPointToCircle.y < min.y) {
+            closestPointToCircle.y = min.y;
+        } else if (closestPointToCircle.y > max.y) {
+            closestPointToCircle.y = max.y;
+        }
+
+        Vector2f circleToBox = new Vector2f(localCirclePos).sub(closestPointToCircle);
+        return circleToBox.lengthSquared() <= circle.getRadius() * circle.getRadius();
     }
 }
