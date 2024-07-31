@@ -5,6 +5,8 @@ import emerald.util.EMath;
 import org.joml.Vector2f;
 import physics2d.primitives.*;
 
+import javax.swing.*;
+
 public class IntersectionDetector2D {
     // =====================================================
     // Point vs. Primitive Tests
@@ -300,5 +302,102 @@ public class IntersectionDetector2D {
 
         Vector2f circleToBox = new Vector2f(localCirclePos).sub(closestPointToCircle);
         return circleToBox.lengthSquared() <= circle.getRadius() * circle.getRadius();
+    }
+
+    // =====================================================
+    // AABB vs. Primitive Tests
+    // =====================================================
+    public static boolean AABBandCircle(AABB2D box, Circle circle) {
+        return circleAndAABB(circle, box);
+    }
+
+    public static boolean AABBandAABB(AABB2D box1, AABB2D box2) {
+        Vector2f[] axisToTest = {new Vector2f(0, 1), new Vector2f(1, 0)};
+        for (int i = 0; i < axisToTest.length; i++) {
+            if (!overlapOnAxis(box1,box2, axisToTest[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean AABBAndBox2D(AABB2D box1, Box2D box2) {
+        Vector2f[] axisToTest = {
+                new Vector2f(0, 1), new Vector2f(1, 0),
+                new Vector2f(0, 1), new Vector2f(1, 0)
+        };
+        EMath.rotate(axisToTest[2], box2.getRigidbody().getRotation(), new Vector2f());
+        EMath.rotate(axisToTest[3], box2.getRigidbody().getRotation(), new Vector2f());
+
+        for (int i = 0; i < axisToTest.length; i++) {
+            if (!overlapOnAxis(box1,box2, axisToTest[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // =====================================================
+    // SAT Helpers
+    // =====================================================
+    private static boolean overlapOnAxis(AABB2D box1, AABB2D box2, Vector2f axis) {
+        Vector2f interval1 = getInterval(box1, axis);
+        Vector2f interval2 = getInterval(box2, axis);
+        return ((interval2.x <= interval1.y) && (interval1.x <= interval2.y));
+    }
+
+    private static boolean overlapOnAxis(AABB2D box1, Box2D box2, Vector2f axis) {
+        Vector2f interval1 = getInterval(box1, axis);
+        Vector2f interval2 = getInterval(box2, axis);
+        return ((interval2.x <= interval1.y) && (interval1.x <= interval2.y));
+    }
+
+    private static boolean overlapOnAxis(Box2D box1, Box2D box2, Vector2f axis) {
+        Vector2f interval1 = getInterval(box1, axis);
+        Vector2f interval2 = getInterval(box2, axis);
+        return ((interval2.x <= interval1.y) && (interval1.x <= interval2.y));
+    }
+
+    private static Vector2f getInterval(AABB2D rect, Vector2f axis) {
+        Vector2f result = new Vector2f(0, 0);
+        Vector2f min = rect.getMin();
+        Vector2f max = rect.getMax();
+
+        Vector2f[] vertices = {
+          new Vector2f(min.x, min.y), new Vector2f(min.x, max.y),
+          new Vector2f(max.x, min.y), new Vector2f(max.x, max.y)
+        };
+
+        result.x = axis.dot(vertices[0]);
+        result.y = result.x;
+        for (int i = 1; i < 4; i++) {
+            float projection = axis.dot(vertices[i]);
+            if (projection < result.x) {
+                result.x = projection;
+            }
+            if (projection > result.y) {
+                result.y = projection;
+            }
+        }
+        return result;
+    }
+
+    private static Vector2f getInterval(Box2D rect, Vector2f axis) {
+        Vector2f result = new Vector2f(0, 0);
+
+        Vector2f[] vertices = rect.getVertices();
+
+        result.x = axis.dot(vertices[0]);
+        result.y = result.x;
+        for (int i = 1; i < 4; i++) {
+            float projection = axis.dot(vertices[i]);
+            if (projection < result.x) {
+                result.x = projection;
+            }
+            if (projection > result.y) {
+                result.y = projection;
+            }
+        }
+        return result;
     }
 }
