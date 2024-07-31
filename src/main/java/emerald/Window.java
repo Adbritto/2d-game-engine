@@ -1,6 +1,7 @@
 package emerald;
 
 import emerald.renderer.DebugDraw;
+import emerald.renderer.Framebuffer;
 import imgui.ImGui;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
@@ -21,6 +22,7 @@ public class Window {
     private int height;
     private final String title;
     private long glfwWindow;
+    private Framebuffer framebuffer;
 
     public float r, g, b, a;
 
@@ -103,10 +105,12 @@ public class Window {
             glClearColor(r, g, b, a);
             glClear(GL_COLOR_BUFFER_BIT);
 
+            //this.framebuffer.bind();
             if (dt >= 0) {
                 DebugDraw.draw();
                 currentScene.update(dt);
             }
+            this.framebuffer.unbind();
 
             this.imGuiLayer.update(dt, currentScene);
             glfwSwapBuffers(glfwWindow);
@@ -181,6 +185,8 @@ public class Window {
         glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
         this.imGuiLayer = new ImGuiLayer(glfwWindow);
         this.imGuiLayer.initImGui();
+
+        this.framebuffer = new Framebuffer(1920, 1080);
 
         Window.changeScene(0);
     }
