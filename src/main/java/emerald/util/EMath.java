@@ -2,7 +2,7 @@ package emerald.util;
 
 import org.joml.Vector2f;
 
-public class JMath {
+public class EMath {
 
     public static void rotate(Vector2f vec, float angleDeg, Vector2f origin) {
         float x = vec.x - origin.x;
