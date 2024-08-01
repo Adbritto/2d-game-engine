@@ -5,8 +5,6 @@ import emerald.util.EMath;
 import org.joml.Vector2f;
 import physics2d.primitives.*;
 
-import javax.swing.*;
-
 public class IntersectionDetector2D {
     // =====================================================
     // Point vs. Primitive Tests
@@ -47,8 +45,8 @@ public class IntersectionDetector2D {
         EMath.rotate(pointLocalBoxSpace, box.getRigidbody().getRotation(),
                 box.getRigidbody().getPosition());
 
-        Vector2f min = box.getMin();
-        Vector2f max = box.getMax();
+        Vector2f min = box.getLocalMin();
+        Vector2f max = box.getLocalMax();
 
         return pointLocalBoxSpace.x <= max.x && min.x <= pointLocalBoxSpace.x &&
                 pointLocalBoxSpace.y <= max.y && min.y <= pointLocalBoxSpace.y;
@@ -114,7 +112,7 @@ public class IntersectionDetector2D {
         EMath.rotate(localEnd, theta, center);
 
         Line2D localLine = new Line2D(localStart, localEnd);
-        AABB2D aabb = new AABB2D(box.getMin(), box.getMax());
+        AABB2D aabb = new AABB2D(box.getLocalMin(), box.getLocalMax());
 
         return lineAndAABB(localLine, aabb);
     }
